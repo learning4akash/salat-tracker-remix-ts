@@ -54,6 +54,14 @@ type SalatMethod = {
     id: number
   }
 
+const userDataObj = {
+  name: '',
+  country: '',
+  city: '',
+  mazhab: '',
+  salat_method: ''
+}
+
 export const loader = async () => {
   const countries = await Country.getAllCountries();
   const userData  = getUserData();
@@ -97,7 +105,7 @@ export default function App() {
   const [mazhab, setMazhab]                        = useState('');
   const [salatMethods, setSalatMethods]            = useState<Array<SalatMethod>>([]);
   const [selectSalatMethod, setSelectSalatMethod]  = useState<string>();
-  const [formUserData, setFormUserData]            = useState<UserData>()
+  const [formUserData, setFormUserData]            = useState<UserData>(userDataObj)
   const [userInfo, setUserInfo]                    = useState<{}>({});
   const actionData                                 = useActionData<typeof action>();
   const {countries, getPrayerCalMethods, userData} = useLoaderData<typeof loader>();
@@ -107,9 +115,13 @@ export default function App() {
     {label: "Maliki", value: "2"},
     {label: "Hanbali", value: "3"},
   ]
-  const handleSubmit = useCallback(() => {
-    submit({name : name, country: country, city: slectCity, mazhab: mazhab, salat_method: selectSalatMethod}, { method: "POST", encType:"application/json"})
+  const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    // submit(event.currentTarget, { method: "POST", encType:"application/json"})
+     const { name, value } = event.currentTarget;
+     setFormUserData({...formUserData, [name]: value})
+    //  submit({name : name, country: country, city: slectCity, mazhab: mazhab, salat_method: selectSalatMethod}, { method: "POST", encType:"application/json"})
   }, [name, country, slectCity, mazhab, selectSalatMethod]);
+  console.log("Hello",formUserData);
   
   useEffect(() => {
     // setFormUserData()
@@ -142,15 +154,11 @@ export default function App() {
     const handleSalatMethodsChange = (value: string) => {
       setSelectSalatMethod(value);
     }
-
-    console.log(selectSalatMethod);
-
   useEffect(() => {
     if (salatMethods) {
       setSalatMethods(Object.values(getPrayerCalMethods.data));
     }  
   }, []);
-  
   useEffect(() => {
     if (! Object.keys(userInfo).length) {
       if (userData) {
@@ -172,7 +180,7 @@ export default function App() {
   return (
     <>
        <AppProvider i18n={{}}>
-        <Page>
+        <Page fullWidth={true}>
         <BlockStack inlineAlign="center" gap="800" as='div'>  
         <Card padding= {{xs: '600'}}>
           <Form onSubmit={handleSubmit}>
