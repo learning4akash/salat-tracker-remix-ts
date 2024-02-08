@@ -2,15 +2,24 @@ import fs  from  'fs';
 import path from 'path';
 const __dirname: string                = path.resolve();
 const userJsonFilePath: string         = __dirname + '/app/storage/user.json';
-const prayerDataFilePath: string       = __dirname + '/app/storage/prayers-data.json';
+const prayerDataFilePath: string       = __dirname + '/app/storage/prayers.data.json';
 const persistenDataFilePath: string    = __dirname + '/app/storage/persisten-data.json';
 
-interface UserData  {
+type UserData = {
     name: string,
     country: string,
     city?: string,
     mazhab: string,
     salat_method: string,
+}
+
+const safeJsonParse = <T>(str: string) => {
+    try {
+        const jsonValue: T = JSON.parse(str);
+        return jsonValue;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export  const storePrayersData = (data: unknown) => {
@@ -30,6 +39,8 @@ export const getPrayersData= () => {
     } catch(err) {
         console.log(err);
     }
+
+    
 }
 
 export const storeUserData = (userData: UserData) => {

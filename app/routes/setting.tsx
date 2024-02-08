@@ -9,7 +9,7 @@ import {
   useFetcher,
   useActionData, 
 } from '@remix-run/react';
-import { useEffect, useState, useCallback, DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_FORM_ACTIONS } from 'react';
+import { useEffect, useState, useCallback} from 'react';
 import { getPrayerTimeCalculationMethods, getPrayerTimeData} from '../module/api';
 import { getUserData, storeUserData, storePrayersData, getPrayersData } from '../module/db.js';
 import { validationAction } from '../utils.js';
@@ -41,11 +41,10 @@ const schema = z.object({
 
 type ActionInput = z.TypeOf<typeof schema>
 
-
-interface UserData  {
+type UserData = {
     name: string,
     country: string,
-    city?: string,
+    city: string,
     mazhab: string,
     salat_method: string,
 }
@@ -75,7 +74,6 @@ export const loader = async () => {
  }
 
  export const action = async( { request }: ActionFunctionArgs ) => {
-    console.log(request);
   const { formData, errors } = await validationAction<ActionInput>({
     request, 
     schema
@@ -104,8 +102,8 @@ export default function App() {
   const [name, setName]                            = useState<string>('');
   const [mazhab, setMazhab]                        = useState('');
   const [salatMethods, setSalatMethods]            = useState<Array<SalatMethod>>([]);
-  const [selectSalatMethod, setSelectSalatMethod]  = useState<string>();
-  const [formUserData, setFormUserData]            = useState<UserData>(userDataObj)
+  const [selectSalatMethod, setSelectSalatMethod]  = useState<string>('');
+  const [formUserData, setFormUserData]            = useState<UserData>(userDataObj);
   const [userInfo, setUserInfo]                    = useState<{}>({});
   const actionData                                 = useActionData<typeof action>();
   const {countries, getPrayerCalMethods, userData} = useLoaderData<typeof loader>();
@@ -115,18 +113,20 @@ export default function App() {
     {label: "Maliki", value: "2"},
     {label: "Hanbali", value: "3"},
   ]
-  const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    // submit(event.currentTarget, { method: "POST", encType:"application/json"})
-     const { name, value } = event.currentTarget;
-     setFormUserData({...formUserData, [name]: value})
-    //  submit({name : name, country: country, city: slectCity, mazhab: mazhab, salat_method: selectSalatMethod}, { method: "POST", encType:"application/json"})
-  }, [name, country, slectCity, mazhab, selectSalatMethod]);
-  console.log("Hello",formUserData);
+  const handleSubmit = useCallback(() => {
+    console.log(formUserData);
+     submit({name : formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.salat_method}, { method: "POST", encType:"application/json"})
+  }, [formUserData]);
+
+  // const handleSubmit = () => {
+  //   console.log("hello submit",formUserData);
+  //   submit({name : formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.selectSalatMethod}, { method: "POST", encType:"application/json"})
+  // }
   
   useEffect(() => {
-    // setFormUserData()
-    // setFormUserData({ ...formUserData, name : name, });
+     setFormUserData({ ...formUserData, name : name, country: country, city: slectCity, mazhab: mazhab, salat_method: selectSalatMethod });
   }, [name, country, slectCity, mazhab, selectSalatMethod]);
+  console.log('new userData', formUserData);
 
     const handleSelectChange = useCallback((value: string) => {
             const selectedCountryCode = countries.find((e) => e.name === value)
