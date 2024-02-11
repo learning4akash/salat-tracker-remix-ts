@@ -1,9 +1,10 @@
 import fs  from  'fs';
 import path from 'path';
+import { SalatTiming, persistentData } from '~/routes/tracker';
 const __dirname: string                = path.resolve();
 const userJsonFilePath: string         = __dirname + '/app/storage/user.json';
 const prayerDataFilePath: string       = __dirname + '/app/storage/prayers.data.json';
-const persistenDataFilePath: string    = __dirname + '/app/storage/persisten-data.json';
+const persistenDataFilePath: string    = __dirname + '/app/storage/persisten.data.json';
 
 type UserData = {
     name: string,
@@ -33,7 +34,7 @@ export const getPrayersData= () => {
     const data = fs.readFileSync(prayerDataFilePath, "utf-8");
     try{
         if (data) {
-            const prayersData = JSON.parse(data);
+            const prayersData: SalatTiming = JSON.parse(data);
             return prayersData
         }
     } catch(err) {
