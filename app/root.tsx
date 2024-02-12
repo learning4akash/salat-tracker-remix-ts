@@ -1,8 +1,10 @@
-import { cssBundleHref } from "@remix-run/css-bundle"; 
+import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { AppProvider, InlineStack, Avatar, Text, ButtonGroup, Button, Card,  Bleed} from "@shopify/polaris";
+import { AppProvider, InlineGrid, Divider, InlineStack, Avatar, Text, ButtonGroup, Button, Card, Bleed } from "@shopify/polaris";
 import { URL } from 'url';
+import { useState, useCallback } from 'react';
+import setting from "./routes/setting"
 import '@shopify/polaris/build/esm/styles.css';
 
 import {
@@ -17,9 +19,9 @@ import {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const getCookie  = request.headers.get('Cookie');
+  const getCookie = request.headers.get('Cookie');
   if ((!getCookie) && url.pathname !== '/setting') {
-      return redirect("/setting");
+    return redirect("/setting");
   }
   return {}
 }
@@ -29,7 +31,6 @@ export const links = () => [
 ];
 
 export default function App() {
-
   return (
     <html lang="en">
       <head>
@@ -39,29 +40,28 @@ export default function App() {
         <Links />
       </head>
       <body>
-      <AppProvider i18n={{}}>
-          <Bleed marginInline="500">
-          <InlineStack wrap={ false } align="space-around">
-              <div></div>
-              <div>
-                <Text variant="heading3xl" as="h2">Salat Tracker</Text>
-              </div>
-              <div style={{ marginTop: "10px"}}>
-                <Avatar />
-              </div>
-          </InlineStack>
-          </Bleed> 
-          {/* <hr /> */}
-          <Card roundedAbove='sm'>
-          <InlineStack wrap={ false } align="center" >
-          <ButtonGroup>
-            <Button>Dashboard</Button>
-            <Button url="/tracker" >Tracker</Button>
-            <Button url="/setting">Setting</Button>
-          </ButtonGroup>
-          </InlineStack>
+        <AppProvider i18n={{}}>
+          <Card>
+          <InlineGrid columns={3} gap="400" alignItems="center">
+            <div style={{ marginLeft: "100px"}}>
+              <Text variant="headingXl" as="h4">Salat Tracker</Text>
+            </div>
+            <div>
+              <InlineStack wrap={false} align="center" as="div" >
+                <ButtonGroup>
+                  <Button size="large" variant="plain">Dashboard</Button>
+                  <Button size="large" url="/tracker" variant="plain" >Tracker</Button>
+                  <Button url="/setting" variant="plain">Setting</Button>
+                </ButtonGroup>
+              </InlineStack>
+            </div>
+            <div style={{marginLeft: "200px"}}>
+              <Avatar />
+            </div>
+          </InlineGrid>
           </Card>
-        </AppProvider>          
+          <Divider borderColor="border" />
+        </AppProvider>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
