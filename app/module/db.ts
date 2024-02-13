@@ -4,6 +4,7 @@ const __dirname: string = path.resolve();
 const userJsonFilePath: string = __dirname + '/app/storage/user.json';
 const prayerDataFilePath: string = __dirname + '/app/storage/prayers.data.json';
 const persistenDataFilePath: string = __dirname + '/app/storage/persisten.data.json';
+import { PersistentData } from '~/routes/tracker';
 
 type UserData = {
     name: string,
@@ -62,14 +63,14 @@ export const getUserData = () => {
     }
 }
 
-export const storePersistentPrayerData = (data: unknown) => {
-    fs.appendFile(persistenDataFilePath, "Hello user data", (error) => {
-        if (error) throw error;
-        console.log('User Data written successfully');
-    });
-}
+// export const storePersistentPrayerData = (data: PersistentData) => {
+//     fs.appendFile(persistenDataFilePath, "Hello user data", (error) => {
+//         if (error) throw error;
+//         console.log('User Data written successfully');
+//     });
+// }
 
-export const persistentPrayerData = (data: unknown) => {
+export const persistentPrayerData = (data: PersistentData) => {
     fs.writeFile(persistenDataFilePath, JSON.stringify(data), (error) => {
         if (error) {
             console.log('file not open', error);
@@ -83,8 +84,8 @@ export const getPersistentPrayerData = () => {
     const data = fs.readFileSync(persistenDataFilePath, "utf-8");
     try {
         if (data) {
-            const userData = JSON.parse(data)
-            return userData;
+            const persistenData: Array<PersistentData> | undefined = JSON.parse(data)
+            return persistenData;
         }
     } catch (e) {
         console.log(e);

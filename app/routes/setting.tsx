@@ -62,7 +62,7 @@ const userDataObj = {
 }
 
 export const loader = async () => {
-  const countries = await Country.getAllCountries();
+  const countries: ICountry[] = await Country.getAllCountries();
   const userData: UserData | undefined = getUserData();
   return json(
     {

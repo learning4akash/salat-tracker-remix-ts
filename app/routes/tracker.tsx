@@ -2,12 +2,12 @@ import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/nod
 import { useState, useEffect } from 'react';
 import { Page, Card, AppProvider, InlineStack, InlineGrid, List, Checkbox, BlockStack } from '@shopify/polaris';
 import moment from 'moment';
-import { getPersistentPrayerData, storePersistentPrayerData, getPrayersData, persistentPrayerData } from '../module/db.js';
+import { getPersistentPrayerData, getPrayersData, persistentPrayerData } from '../module/db.js';
 import { json } from '@remix-run/node';
 import { useLoaderData, useSubmit, useFetcher } from '@remix-run/react';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const getCookie = request.headers.get('Cookie');
+  const getCookie: string | null = request.headers.get('Cookie');
   const prayerData = getPrayersData();
   const getPersistentPrayer = getPersistentPrayerData();
   // const storePersistentData = getPersistentPrayerData();
@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const data = await request.json();
+  const data: PersistentData = await request.json();
   persistentPrayerData(data);
   return {}
 }
@@ -38,7 +38,7 @@ type Timings = {
   Isha: string,
 }
 
-type PersistentData = {
+export type PersistentData = {
   date: string,
   timings: Array<persistenTimings>
 }
@@ -66,7 +66,6 @@ const App = () => {
   const { prayerData, getPersistentPrayer } = useLoaderData<typeof loader>();
   const submit = useSubmit()
   const prepareTimings = (prayerData: Array<PrayerData>, persistentData: PersistentData | null) => {
-    console.log('Hello World', persistentData);
     const modifiedData = moment(date).format('DD');
     const current: PrayerData = prayerData[parseInt(modifiedData) - 1];
     const _timings: Array<persistenTimings> = [];
@@ -88,7 +87,7 @@ const App = () => {
   useEffect(() => {
     if (!data.length) {
       const { data: prayersData } = prayerData;
-      const persistentData: Array<PersistentData> | [] = getPersistentPrayer ?? [];
+      const persistentData: Array<PersistentData> | []  = getPersistentPrayer ?? [];
       const currentDateIndex: number = persistentData?.findIndex(data => date == data?.date);
       let persistentResult: PersistentData | null = null;
       if (currentDateIndex > -1) {
@@ -119,7 +118,7 @@ const App = () => {
     const timing: persistenTimings = { ...timings[index] };
     timing.isCompleted = !timing.isCompleted;
     timings[index] = timing;
-    const persistentData: Array<PersistentData> = getPersistentPrayer ?? [];
+    const persistentData: Array<PersistentData> | [] = getPersistentPrayer ?? [];
     if (currentDataPersistentIndex > -1) {
       const data: PersistentData = persistentData[currentDataPersistentIndex];
       const prayerIndex: number = data?.timings?.findIndex(timing => timing.label == timings[index].label);
