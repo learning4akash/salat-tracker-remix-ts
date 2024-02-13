@@ -104,7 +104,7 @@ export default function App() {
   const [salatMethods, setSalatMethods] = useState<Array<SalatMethod>>([]);
   const [selectSalatMethod, setSelectSalatMethod] = useState<string>('');
   const [formUserData, setFormUserData] = useState<UserData>(userDataObj);
-  const [userInfo, setUserInfo] = useState<UserData>(userDataObj);
+  const [userInfo, setUserInfo] = useState<UserData | {}>({});
   const actionData = useActionData<typeof action>();
   const { countries, getPrayerCalMethods, userData } = useLoaderData<typeof loader>();
   const optionMazhab: Array<{ label: string, value: string }> = [
@@ -131,6 +131,8 @@ export default function App() {
       setSelectSalatMethod(userData.salat_method);
     }
   }, [userData]);
+  console.log("Hello",slectCity);
+
   const handleSelectChange = useCallback((value: string) => {
     const selectedCountryCode = countries.find((e) => e.name === value)
     if (selectedCountryCode) {
@@ -181,8 +183,6 @@ export default function App() {
       setCity(cityFetcher.data);
     }
   }, [cityFetcher]);
-  console.log(formUserData);
-
   return (
     <>
       <AppProvider i18n={{}}>

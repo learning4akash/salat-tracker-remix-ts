@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { useState, useEffect } from 'react';
-import { Page, Card, AppProvider, InlineStack, List, Checkbox, BlockStack } from '@shopify/polaris';
+import { Page, Card, AppProvider, InlineStack, InlineGrid, List, Checkbox, BlockStack } from '@shopify/polaris';
 import moment from 'moment';
 import { getPersistentPrayerData, storePersistentPrayerData, getPrayersData, persistentPrayerData } from '../module/db.js';
 import { json } from '@remix-run/node';
@@ -161,17 +161,23 @@ const App = () => {
         {timings?.map((timing, index) => (
           <BlockStack gap="500" align='center'>
             <Card padding={{ xs: '100' }}>
-              <InlineStack wrap={true} gap="100" align="space-between" blockAlign="center">
-                <List type="bullet" >
-                  <List.Item>{timing.label}</List.Item>
-                </List>
-                <List type="bullet">
-                  <List.Item>{timing.time}</List.Item>
-                </List>
-                <List type="bullet">
-                  <List.Item>{date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox label="" onChange={() => handleCompleteSalat(index)} disabled checked={timing.isCompleted}></Checkbox> : <Checkbox label="" onChange={() => handleCompleteSalat(index)} checked={timing.isCompleted}></Checkbox>}</List.Item>
-                </List>
-              </InlineStack>
+              <InlineGrid columns={3} alignItems="end" gap="400">
+                <div>
+                  <List type="bullet">
+                    <List.Item>{timing.label}</List.Item>
+                  </List>
+                </div>
+                <div style={{ marginLeft: "50px"}}>
+                  <List type="bullet">
+                    <List.Item>{timing.time}</List.Item>
+                  </List>
+                </div>
+                <div style={{marginLeft: "130px"}}>
+                  <List type="bullet" >
+                    <List.Item>{date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox label="" onChange={() => handleCompleteSalat(index)} disabled checked={timing.isCompleted}></Checkbox> : <Checkbox label="" onChange={() => handleCompleteSalat(index)} checked={timing.isCompleted}></Checkbox>}</List.Item>
+                  </List>
+                </div>
+              </InlineGrid>
             </Card>
           </BlockStack>
         ))}
