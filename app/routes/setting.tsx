@@ -98,7 +98,7 @@ export default function App() {
   const [country, setCountry] = useState<string>('');
   const [countryCode, setCountryCode] = useState<string | undefined>('');
   const [city, setCity] = useState<Array<ICity>>([]);
-  const [slectCity, setSelectCity] = useState<string>('');
+  const [slectCity, setSelectCity] = useState<string | undefined>('');
   const [name, setName] = useState<string>('');
   const [mazhab, setMazhab] = useState('');
   const [salatMethods, setSalatMethods] = useState<Array<SalatMethod>>([]);
@@ -114,20 +114,23 @@ export default function App() {
     { label: "Hanbali", value: "3" },
   ]
   const handleSubmit = useCallback(() => {
-    if (formUserData) {
-      submit({ name: formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.salat_method }, { method: "POST", encType: "application/json" })
-    }
+    submit({ name: formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.salat_method }, { method: "POST", encType: "application/json" })
   }, [formUserData]);
 
   useEffect(() => {
     setFormUserData({ ...formUserData, name: name, country: country, city: slectCity, mazhab: mazhab, salat_method: selectSalatMethod });
   }, [name, country, slectCity, mazhab, selectSalatMethod]);
 
-  // useEffect(() => {
-  //   if (userData) {
-  //     setFormUserData(userData);
-  //   }
-  // }, [userData]);
+  useEffect(() => {
+    if (userData) {
+      setFormUserData(userData);
+      setName(userData.name);
+      setCountry(userData.country);
+      setMazhab(userData.mazhab);
+      setSelectCity(userData.city);
+      setSelectSalatMethod(userData.salat_method);
+    }
+  }, [userData]);
   const handleSelectChange = useCallback((value: string) => {
     const selectedCountryCode = countries.find((e) => e.name === value)
     if (selectedCountryCode) {
@@ -185,57 +188,59 @@ export default function App() {
       <AppProvider i18n={{}}>
         <Page fullWidth={true}>
           <BlockStack inlineAlign="center" gap="800" as='div'>
-            <Card padding={{ xs: '600' }}>
-              <Form onSubmit={handleSubmit}>
-                <FormLayout>
-                  <TextField
-                    value={formUserData.name}
-                    onChange={handleNameChange}
-                    label="Name"
-                    type="text"
-                    autoComplete="Name"
-                    placeholder='Type Your Name'
-                    name="name"
-                  />
-                  {actionData?.errors?.name && (<InlineError message={actionData?.errors?.name} fieldID="name" />)}
-                  <Select
-                    label="Country"
-                    options={countries.map(e => ({ label: e.name, value: e.name }))}
-                    onChange={handleSelectChange}
-                    value={formUserData.country}
-                    name="country"
-                    placeholder=' Select Your Country'
-                  />
-                  {actionData?.errors?.country && (<InlineError message={actionData?.errors?.country} fieldID="country" />)}
-                  <Select
-                    label="City"
-                    options={city.map(e => ({ label: e.name, value: e.name }))}
-                    onChange={handleCityChange}
-                    disabled={city.length ? false : true}
-                    value={slectCity}
-                    placeholder=' Select Your City'
-                  />
-                  {actionData?.errors?.city && (<InlineError message={actionData?.errors?.city} fieldID="city" />)}
-                  <Select
-                    label="Mazhab"
-                    options={optionMazhab}
-                    onChange={handleMazhabChange}
-                    value={formUserData.mazhab}
-                    placeholder="Select Your Mazhab"
-                  />
-                  {actionData?.errors?.mazhab && (<InlineError message={actionData?.errors?.mazhab} fieldID="mazhab" />)}
-                  <Select
-                    label="Salat Method"
-                    options={salatMethods?.map(e => ({ label: e.name, value: e.id.toString() }))}
-                    onChange={handleSalatMethodsChange}
-                    value={selectSalatMethod || formUserData.salat_method}
-                    placeholder="Select Your City Salat Time Calculation Methods"
-                  />
-                  {actionData?.errors?.salat_method && (<InlineError message={actionData?.errors?.salat_method} fieldID="salat method" />)}
-                  <Button submit>Submit</Button>
-                </FormLayout>
-              </Form>
-            </Card>
+            <div style={{ height: "400px", width: "400px" }}>
+              <Card padding={{ xs: '600' }}>
+                <Form onSubmit={handleSubmit}>
+                  <FormLayout>
+                    <TextField
+                      value={name}
+                      onChange={handleNameChange}
+                      label="Name"
+                      type="text"
+                      autoComplete="Name"
+                      placeholder='Type Your Name'
+                      name="name"
+                    />
+                    {actionData?.errors?.name && (<InlineError message={actionData?.errors?.name} fieldID="name" />)}
+                    <Select
+                      label="Country"
+                      options={countries.map(e => ({ label: e.name, value: e.name }))}
+                      onChange={handleSelectChange}
+                      value={country}
+                      name="country"
+                      placeholder=' Select Your Country'
+                    />
+                    {actionData?.errors?.country && (<InlineError message={actionData?.errors?.country} fieldID="country" />)}
+                    <Select
+                      label="City"
+                      options={city.map(e => ({ label: e.name, value: e.name }))}
+                      onChange={handleCityChange}
+                      disabled={city.length ? false : true}
+                      value={slectCity}
+                      placeholder=' Select Your City'
+                    />
+                    {actionData?.errors?.city && (<InlineError message={actionData?.errors?.city} fieldID="city" />)}
+                    <Select
+                      label="Mazhab"
+                      options={optionMazhab}
+                      onChange={handleMazhabChange}
+                      value={mazhab}
+                      placeholder="Select Your Mazhab"
+                    />
+                    {actionData?.errors?.mazhab && (<InlineError message={actionData?.errors?.mazhab} fieldID="mazhab" />)}
+                    <Select
+                      label="Salat Method"
+                      options={salatMethods?.map(e => ({ label: e.name, value: e.id.toString() }))}
+                      onChange={handleSalatMethodsChange}
+                      value={selectSalatMethod}
+                      placeholder="Select Your City Salat Time Calculation Methods"
+                    />
+                    {actionData?.errors?.salat_method && (<InlineError message={actionData?.errors?.salat_method} fieldID="salat method" />)}
+                    <Button submit>Submit</Button>
+                  </FormLayout>
+                </Form>
+              </Card>
+            </div>
           </BlockStack>
         </Page>
       </AppProvider>
