@@ -1,7 +1,7 @@
 import { json } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { City } from 'country-state-city';
-import { ICountry,  ICity } from 'country-state-city'
+import { ICountry, ICity } from 'country-state-city'
 
 // import invariant from "tiny-invariant";
 export const loader = async ({ params }: LoaderFunctionArgs) => {

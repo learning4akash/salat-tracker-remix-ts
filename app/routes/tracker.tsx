@@ -66,7 +66,7 @@ const App = () => {
   const { prayerData, getPersistentPrayer } = useLoaderData<typeof loader>();
   const submit = useSubmit()
   const prepareTimings = (prayerData: Array<PrayerData>, persistentData: PersistentData | null) => {
-    console.log('Hello World',persistentData);
+    console.log('Hello World', persistentData);
     const modifiedData = moment(date).format('DD');
     const current: PrayerData = prayerData[parseInt(modifiedData) - 1];
     const _timings: Array<persistenTimings> = [];
@@ -103,7 +103,7 @@ const App = () => {
   useEffect(() => {
     if (data.length) {
       const persistentData: Array<PersistentData> | [] = getPersistentPrayer ?? [];
-      const currentDateIndex: number = persistentData?.findIndex((data:any) => date == data?.date);
+      const currentDateIndex: number = persistentData?.findIndex((data: any) => date == data?.date);
       let persistentResult: PersistentData | null = null;
       if (currentDateIndex > -1) {
         setCurrentDatePersistentIndex(currentDateIndex);

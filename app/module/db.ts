@@ -1,9 +1,9 @@
-import fs  from  'fs';
+import fs from 'fs';
 import path from 'path';
-const __dirname: string                = path.resolve();
-const userJsonFilePath: string         = __dirname + '/app/storage/user.json';
-const prayerDataFilePath: string       = __dirname + '/app/storage/prayers.data.json';
-const persistenDataFilePath: string    = __dirname + '/app/storage/persisten.data.json';
+const __dirname: string = path.resolve();
+const userJsonFilePath: string = __dirname + '/app/storage/user.json';
+const prayerDataFilePath: string = __dirname + '/app/storage/prayers.data.json';
+const persistenDataFilePath: string = __dirname + '/app/storage/persisten.data.json';
 
 type UserData = {
     name: string,
@@ -22,42 +22,42 @@ const safeJsonParse = <T>(str: string) => {
     }
 }
 
-export  const storePrayersData = (data: unknown) => {
+export const storePrayersData = (data: unknown) => {
     fs.writeFile(prayerDataFilePath, JSON.stringify(data), (error) => {
         if (error) throw error;
         console.log('Prayer Data written successfully');
     });
 };
 
-export const getPrayersData= () => {
+export const getPrayersData = () => {
     const data = fs.readFileSync(prayerDataFilePath, "utf-8");
-    try{
+    try {
         if (data) {
             const prayersData = JSON.parse(data);
             return prayersData
         }
-    } catch(err) {
+    } catch (err) {
         console.log(err);
     }
 
-    
+
 }
 
 export const storeUserData = (userData: UserData) => {
     fs.writeFile(userJsonFilePath, JSON.stringify(userData), (error) => {
         if (error) throw error;
         console.log('User Data written successfully');
-    });   
+    });
 }
 
-export const  getUserData =  () => {
+export const getUserData = () => {
     const data = fs.readFileSync(userJsonFilePath, "utf-8");
     try {
         if (data) {
-            const userData = JSON.parse(data)
+            const userData: UserData | undefined = JSON.parse(data)
             return userData;
         }
-    } catch(e) {
+    } catch (e) {
         console.log(e);
     }
 }
@@ -66,7 +66,7 @@ export const storePersistentPrayerData = (data: unknown) => {
     fs.appendFile(persistenDataFilePath, "Hello user data", (error) => {
         if (error) throw error;
         console.log('User Data written successfully');
-    }); 
+    });
 }
 
 export const persistentPrayerData = (data: unknown) => {
@@ -86,7 +86,7 @@ export const getPersistentPrayerData = () => {
             const userData = JSON.parse(data)
             return userData;
         }
-    } catch(e) {
+    } catch (e) {
         console.log(e);
     }
 }

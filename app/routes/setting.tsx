@@ -44,7 +44,7 @@ type ActionInput = z.TypeOf<typeof schema>
 type UserData = {
   name: string,
   country: string,
-  city: string,
+  city?: string,
   mazhab: string,
   salat_method: string,
 }
@@ -63,7 +63,7 @@ const userDataObj = {
 
 export const loader = async () => {
   const countries = await Country.getAllCountries();
-  const userData = getUserData();
+  const userData: UserData | undefined = getUserData();
   return json(
     {
       userData,
@@ -104,7 +104,7 @@ export default function App() {
   const [salatMethods, setSalatMethods] = useState<Array<SalatMethod>>([]);
   const [selectSalatMethod, setSelectSalatMethod] = useState<string>('');
   const [formUserData, setFormUserData] = useState<UserData>(userDataObj);
-  const [userInfo, setUserInfo] = useState<{}>({});
+  const [userInfo, setUserInfo] = useState<UserData>(userDataObj);
   const actionData = useActionData<typeof action>();
   const { countries, getPrayerCalMethods, userData } = useLoaderData<typeof loader>();
   const optionMazhab: Array<{ label: string, value: string }> = [
@@ -114,24 +114,20 @@ export default function App() {
     { label: "Hanbali", value: "3" },
   ]
   const handleSubmit = useCallback(() => {
-    console.log(formUserData);
-    submit({ name: formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.salat_method }, { method: "POST", encType: "application/json" })
+    if (formUserData) {
+      submit({ name: formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.salat_method }, { method: "POST", encType: "application/json" })
+    }
   }, [formUserData]);
-
-  // const handleSubmit = () => {
-  //   console.log("hello submit",formUserData);
-  //   submit({name : formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.selectSalatMethod}, { method: "POST", encType:"application/json"})
-  // }
 
   useEffect(() => {
     setFormUserData({ ...formUserData, name: name, country: country, city: slectCity, mazhab: mazhab, salat_method: selectSalatMethod });
   }, [name, country, slectCity, mazhab, selectSalatMethod]);
 
-  useEffect(() => {
-    if (userData) {
-      setFormUserData(userData);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userData) {
+  //     setFormUserData(userData);
+  //   }
+  // }, [userData]);
   const handleSelectChange = useCallback((value: string) => {
     const selectedCountryCode = countries.find((e) => e.name === value)
     if (selectedCountryCode) {
@@ -172,7 +168,9 @@ export default function App() {
           setCountryCode(findCountry.isoCode);
         }
       }
-      setUserInfo(userData);
+      if (userData) {
+        setUserInfo(userData);
+      }
     }
   }, [])
   useEffect(() => {
@@ -214,7 +212,7 @@ export default function App() {
                     options={city.map(e => ({ label: e.name, value: e.name }))}
                     onChange={handleCityChange}
                     disabled={city.length ? false : true}
-                    value={slectCity || formUserData.city}
+                    value={slectCity}
                     placeholder=' Select Your City'
                   />
                   {actionData?.errors?.city && (<InlineError message={actionData?.errors?.city} fieldID="city" />)}
