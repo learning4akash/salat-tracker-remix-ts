@@ -131,7 +131,7 @@ export default function App() {
       setSelectSalatMethod(userData.salat_method);
     }
   }, [userData]);
-  console.log("Hello",slectCity);
+  console.log("Hello", slectCity);
 
   const handleSelectChange = useCallback((value: string) => {
     const selectedCountryCode = countries.find((e) => e.name === value)

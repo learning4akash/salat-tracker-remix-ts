@@ -53,9 +53,9 @@ type persistenTimings = {
 const GLOBAL_DATE_FORMAT = 'YYYY-MM-DD';
 
 const App = () => {
-  const [date, setDate] = useState(moment().format(GLOBAL_DATE_FORMAT));
-  const [currentDataPersistentIndex, setCurrentDatePersistentIndex] = useState(-1);
-  const [dateLabel, setDateLabel] = useState(new Date().toLocaleDateString("en-GB", {
+  const [date, setDate] = useState<string>(moment().format(GLOBAL_DATE_FORMAT));
+  const [currentDataPersistentIndex, setCurrentDatePersistentIndex] = useState<number>(-1);
+  const [dateLabel, setDateLabel] = useState<string>(new Date().toLocaleDateString("en-GB", {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
@@ -142,7 +142,7 @@ const App = () => {
   }
   return (
     <AppProvider i18n={{}}>
-      <div style={{ height: "400px", width: "400px", margin: "auto"}}>
+      <div style={{ height: "400px", width: "400px", margin: "auto" }}>
         <Page
           narrowWidth
           title={dateLabel}
