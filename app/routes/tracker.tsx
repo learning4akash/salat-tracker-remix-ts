@@ -10,7 +10,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const getCookie: string | null = request.headers.get('Cookie');
   const prayerData = getPrayersData();
   const getPersistentPrayer = getPersistentPrayerData();
-  // const storePersistentData = getPersistentPrayerData();
   if (!getCookie) {
     return redirect("/setting");
   }
@@ -62,7 +61,6 @@ const App = () => {
   }))
   const [data, setData] = useState<Array<PrayerData>>([]);
   const [timings, setTimings] = useState<Array<persistenTimings>>([]);
-  const [loading, setLoading] = useState(false);
   const { prayerData, getPersistentPrayer } = useLoaderData<typeof loader>();
   const submit = useSubmit()
   const prepareTimings = (prayerData: Array<PrayerData>, persistentData: PersistentData | null) => {
