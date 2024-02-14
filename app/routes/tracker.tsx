@@ -87,7 +87,7 @@ const App = () => {
   useEffect(() => {
     if (!data.length) {
       const { data: prayersData } = prayerData;
-      const persistentData: Array<PersistentData> | []  = getPersistentPrayer ?? [];
+      const persistentData: Array<PersistentData> | [] = getPersistentPrayer ?? [];
       const currentDateIndex: number = persistentData?.findIndex(data => date == data?.date);
       let persistentResult: PersistentData | null = null;
       if (currentDateIndex > -1) {
@@ -142,45 +142,43 @@ const App = () => {
   }
   return (
     <AppProvider i18n={{}}>
-      <Page
-        narrowWidth
-        title={dateLabel}
-        pagination={{
-          hasPrevious: true,
-          onPrevious: () => {
-            setDate(moment(date).subtract(1, 'days').format(GLOBAL_DATE_FORMAT))
-          },
-          hasNext: true,
-          onNext: () => {
-            setDate(moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
-          }
-        }}
-      >
+      <div style={{ height: "400px", width: "400px", margin: "auto"}}>
+        <Page
+          narrowWidth
+          title={dateLabel}
+          pagination={{
+            hasPrevious: true,
+            onPrevious: () => {
+              setDate(moment(date).subtract(1, 'days').format(GLOBAL_DATE_FORMAT))
+            },
+            hasNext: true,
+            onNext: () => {
+              setDate(moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
+            }
+          }}
+        >
 
-        {timings?.map((timing, index) => (
-          <BlockStack gap="500" align='center'>
-            <Card padding={{ xs: '100' }}>
-              <InlineGrid columns={3} alignItems="end" gap="400">
-                <div>
-                  <List type="bullet">
-                    <List.Item>{timing.label}</List.Item>
-                  </List>
-                </div>
-                <div style={{ marginLeft: "50px"}}>
-                  <List type="bullet">
-                    <List.Item>{timing.time}</List.Item>
-                  </List>
-                </div>
-                <div style={{marginLeft: "130px"}}>
-                  <List type="bullet" >
-                    <List.Item>{date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox label="" onChange={() => handleCompleteSalat(index)} disabled checked={timing.isCompleted}></Checkbox> : <Checkbox label="" onChange={() => handleCompleteSalat(index)} checked={timing.isCompleted}></Checkbox>}</List.Item>
-                  </List>
-                </div>
-              </InlineGrid>
-            </Card>
-          </BlockStack>
-        ))}
-      </Page>
+          {timings?.map((timing, index) => (
+            <BlockStack gap="500" align='center'>
+              <Card padding={{ xs: '100' }}>
+                <InlineGrid columns={2} alignItems="end" gap="400">
+                  <div>
+                    <List type="bullet" >
+                      <List.Item>{date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox label="" onChange={() => handleCompleteSalat(index)} disabled checked={timing.isCompleted}></Checkbox> : <Checkbox label="" onChange={() => handleCompleteSalat(index)} checked={timing.isCompleted}></Checkbox>}</List.Item>
+                    </List>
+                  </div>
+                  <div>
+                    <List type="bullet">
+                      <List.Item>{timing.label} {" "} ({timing.time})</List.Item>
+                    </List>
+                  </div>
+                </InlineGrid>
+              </Card>
+            </BlockStack>
+          ))}
+        </Page>
+
+      </div>
     </AppProvider>
 
   );
