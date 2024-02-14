@@ -161,7 +161,7 @@ const App = () => {
           {timings?.map((timing, index) => (
             <BlockStack gap="500" align='center'>
               <Card padding={{ xs: '100' }}>
-                <InlineGrid columns={2} alignItems="end" gap="400">
+                <InlineGrid columns={['oneThird', 'twoThirds']} alignItems="center" >
                   <div>
                     <List type="bullet" >
                       <List.Item>{date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox label="" onChange={() => handleCompleteSalat(index)} disabled checked={timing.isCompleted}></Checkbox> : <Checkbox label="" onChange={() => handleCompleteSalat(index)} checked={timing.isCompleted}></Checkbox>}</List.Item>

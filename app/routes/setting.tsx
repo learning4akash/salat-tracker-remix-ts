@@ -114,7 +114,7 @@ export default function App() {
     { label: "Hanbali", value: "3" },
   ]
   const handleSubmit = useCallback(() => {
-    submit({ name: formUserData.name, country: formUserData.country, city: formUserData.city, mazhab: formUserData.mazhab, salat_method: formUserData.salat_method }, { method: "POST", encType: "application/json" })
+    submit(formUserData, { method: "POST", encType: "application/json" })
   }, [formUserData]);
 
   useEffect(() => {

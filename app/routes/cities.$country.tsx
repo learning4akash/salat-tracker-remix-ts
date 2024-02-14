@@ -7,7 +7,7 @@ import { ICountry, ICity } from 'country-state-city'
 export const loader = async ({ params }: LoaderFunctionArgs) => {
     // invariant(params.country, "Missing country param");
     if (params.country) {
-        const cities = City.getCitiesOfCountry(params.country);
+        const cities: ICity[] | undefined = City.getCitiesOfCountry(params.country);
         if (!cities) throw new Response("", { status: 404 });
         return json(cities)
     }
