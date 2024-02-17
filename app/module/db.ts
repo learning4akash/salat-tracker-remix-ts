@@ -40,8 +40,6 @@ export const getPrayersData = () => {
     } catch (err) {
         console.log(err);
     }
-
-
 }
 
 export const storeUserData = (userData: UserData) => {
@@ -52,8 +50,8 @@ export const storeUserData = (userData: UserData) => {
 }
 
 export const getUserData = () => {
-    const data = fs.readFileSync(userJsonFilePath, "utf-8");
     try {
+        const data = fs.readFileSync(userJsonFilePath, "utf-8");
         if (data) {
             const userData: UserData | undefined = JSON.parse(data)
             return userData;
@@ -62,13 +60,6 @@ export const getUserData = () => {
         console.log(e);
     }
 }
-
-// export const storePersistentPrayerData = (data: PersistentData) => {
-//     fs.appendFile(persistenDataFilePath, "Hello user data", (error) => {
-//         if (error) throw error;
-//         console.log('User Data written successfully');
-//     });
-// }
 
 export const persistentPrayerData = (data: PersistentData) => {
     fs.writeFile(persistenDataFilePath, JSON.stringify(data), (error) => {

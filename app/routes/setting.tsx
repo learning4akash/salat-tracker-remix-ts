@@ -2,7 +2,8 @@ import { json } from '@remix-run/node';
 import { FormLayout, TextField, BlockStack, AppProvider, Form, Button, Select, Page, Card, InlineError } from '@shopify/polaris';
 import { City, Country } from 'country-state-city';
 import { ICountry, ICity } from 'country-state-city'
-import type { ActionFunctionArgs } from '@remix-run/node';
+import { v4 as uuidv4 } from 'uuid';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import {
   useLoaderData,
   useSubmit,
@@ -17,6 +18,7 @@ import { z } from "zod";
 import { redirect } from '@remix-run/node';
 
 const schema = z.object({
+ 
   name: z.string({
     required_error: "Name is required",
     invalid_type_error: " Name must be a string",
@@ -61,12 +63,18 @@ const userDataObj = {
   salat_method: ''
 }
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const countries: ICountry[] = await Country.getAllCountries();
-  const userData: UserData | undefined = getUserData();
+  const usersData: UserData | undefined  = getUserData();
+  if (usersData) {
+    const currentUser = "Akash";
+    const userData: UserData | undefined = usersData[currentUser as keyof UserData] 
+    console.log(userData);
+  }
+  const getCookie: string | null = request.headers.get('Cookie');
   return json(
     {
-      userData,
+      usersData,
       countries,
       getPrayerCalMethods: await getPrayerTimeCalculationMethods(),
     }
@@ -83,12 +91,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const prayerTimeData = await getPrayerTimeData(formData);
   if (formData && prayerTimeData) {
     storePrayersData(prayerTimeData);
-    storeUserData(formData);
+    const userData: UserData | undefined  = getUserData();
+    console.log("hello",userData);
+
+    let userObj: UserData | {} = {};
+    userObj[formData.name] = formData
+
+    console.log(userObj);
+    storeUserData(userObj);
     return redirect('/tracker', {
       headers: {
-        "Set-Cookie": "1",
+        "Set-Cookie": "2",
       },
-    });
+    }); 
   }
 }
 
@@ -131,7 +146,6 @@ export default function App() {
       setSelectSalatMethod(userData.salat_method);
     }
   }, [userData]);
-  console.log("Hello", slectCity);
 
   const handleSelectChange = useCallback((value: string) => {
     const selectedCountryCode = countries.find((e) => e.name === value)
